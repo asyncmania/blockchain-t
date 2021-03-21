@@ -1,6 +1,6 @@
 import * as crypto from "crypto";
 
-class Block {
+export  class Block {
   readonly hash: string;
 
   constructor(
@@ -14,7 +14,7 @@ class Block {
 
   private calculateHash(): string {
     const data = `${this.index}${this.previousHash}${this.timestamp}${this.data}`;
-    return crypto.createHash("256").update(data).digest("hex");
+    return crypto.createHash("sha256").update(data).digest("hex");
   }
 
 }
