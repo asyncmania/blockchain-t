@@ -1,6 +1,7 @@
 import * as crypto from "crypto";
 
 export  class Block {
+  readonly nonce: number;
   readonly hash: string;
 
   constructor(
@@ -9,12 +10,25 @@ export  class Block {
     readonly timestamp: number,
     readonly data: string
   ) {
-    this.hash = this.calculateHash();
+   const { nonce, hash } = this.mine()
+   this.hash = hash
+   this.nonce = nonce
   }
 
-  private calculateHash(): string {
-    const data = `${this.index}${this.previousHash}${this.timestamp}${this.data}`;
+  private calculateHash(nonce: number): string {
+    const data = `${this.index}${this.previousHash}${this.timestamp}${this.data}${nonce}`;
     return crypto.createHash("sha256").update(data).digest("hex");
+  }
+
+  private mine(): {nonce: number, hash: string} {
+    let hash: string;
+    let nonce = 0;
+
+    do {
+      hash = this.calculateHash(++nonce)
+    } while (hash.startsWith('0000') === false );
+
+    return { nonce, hash }
   }
 
 }
